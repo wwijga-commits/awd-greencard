@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWD Green Card Portal — Demo</title>
+<style>
+  :root {
+    --awd-blue: #003a5d;
+    --awd-teal: #00a3a1;
+    --awd-orange: #f29200;
+    --awd-sand: #f7f3ec;
+    --awd-text: #1f2937;
+    --awd-muted: #6b7280;
+    --awd-border: #e5e7eb;
+    --awd-green: #16a34a;
+    --awd-amber: #f59e0b;
+    --awd-red: #dc2626;
+    --awd-bg: #f5f7fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--awd-bg);
+    color: var(--awd-text);
+    line-height: 1.5;
+  }
+  .topbar {
+    background: var(--awd-blue);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .logo { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
+  .logo span { color: var(--awd-orange); }
+  .nav-switch { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-switch button {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .nav-switch button.active { background: var(--awd-orange); border-color: var(--awd-orange); }
+  .nav-switch button:hover:not(.active) { background: rgba(255,255,255,0.2); }
+  .page { padding: 28px; max-width: 1200px; margin: 0 auto; display: none; }
+  .page.active { display: block; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header h1 { margin: 0 0 4px 0; font-size: 26px; color: var(--awd-blue); }
+  .header p { margin: 0; color: var(--awd-muted); font-size: 14px; }
+  .role-badge {
+    background: white;
+    border: 1px solid var(--awd-border);
+    padding: 10px 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .role-badge .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--awd-teal); }
+  .role-badge strong { color: var(--awd-blue); }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi { background: white; border: 1px solid var(--awd-border); border-radius: 12px; padding: 16px 18px; }
+  .kpi .label { color: var(--awd-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi .value { font-size: 28px; font-weight: 700; color: var(--awd-blue); }
+  .kpi.warn .value { color: var(--awd-amber); }
+  .kpi.alert .value { color: var(--awd-red); }
+  .kpi.ok .value { color: var(--awd-green); }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
+  .toolbar input, .toolbar select {
+    padding: 8px 12px;
+    border: 1px solid var(--awd-border);
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+  }
+  .toolbar input { min-width: 240px; }
+  .toolbar .spacer { flex: 1; }
+  .btn { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; }
+  .btn-primary { background: var(--awd-orange); color: white; }
+  .btn-primary:hover { background: #d87f00; }
+  .btn-secondary { background: white; color: var(--awd-blue); border: 1px solid var(--awd-border); }
+  .btn-secondary:hover { background: #f3f4f6; }
+  .table-wrapper { background: white; border: 1px solid var(--awd-border); border-radius: 12px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead { background: var(--awd-sand); }
+  th { text-align: left; padding: 12px 16px; font-weight: 600; color: var(--awd-blue); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  td { padding: 14px 16px; border-top: 1px solid var(--awd-border); vertical-align: middle; }
+  tr:hover td { background: #fafbfc; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .pill.ok { background: #dcfce7; color: #166534; }
+  .pill.warn { background: #fef3c7; color: #92400e; }
+  .pill.alert { background: #fee2e2; color: #991b1b; }
+  .pill.expired { background: #1f2937; color: white; }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .reminders { display: inline-flex; gap: 3px; }
+  .reminders span { width: 18px; height: 18px; border-radius: 4px; background: #e5e7eb; display: inline-block; }
+  .reminders span.sent { background: var(--awd-orange); }
+  .reminders span.escalated { background: var(--awd-red); }
+  .action-btn { background: transparent; border: 1px solid var(--awd-border); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; color: var(--awd-blue); margin-right: 4px; white-space: nowrap; }
+  .action-btn:hover { background: var(--awd-sand); }
+  .action-btn.primary { background: var(--awd-teal); color: white; border-color: var(--awd-teal); }
+  .action-btn.primary:hover { background: #008785; }
+  .upload-wrapper { max-width: 480px; margin: 40px auto; }
+  .upload-card { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; }
+  .upload-card .welcome { color: var(--awd-muted); font-size: 14px; margin-bottom: 4px; }
+  .upload-card h2 { margin: 0 0 8px 0; color: var(--awd-blue); }
+  .upload-card .desc { color: var(--awd-muted); font-size: 14px; margin-bottom: 24px; }
+  .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--awd-border); font-size: 14px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .label { color: var(--awd-muted); }
+  .info-row .value { font-weight: 600; color: var(--awd-blue); }
+  .info-row .value.expired { color: var(--awd-red); }
+  .consent { display: flex; gap: 10px; align-items: flex-start; text-align: left; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-bottom: 16px; font-size: 13px; color: #854d0e; }
+  .consent input { margin-top: 3px; }
+  .dropzone { border: 2px dashed var(--awd-border); border-radius: 12px; padding: 32px 16px; margin: 20px 0; cursor: pointer; transition: all 0.2s; }
+  .dropzone:hover { border-color: var(--awd-teal); background: #f0fdfa; }
+  .dropzone .icon { font-size: 36px; color: var(--awd-teal); margin-bottom: 8px; }
+  .dropzone .main { font-weight: 600; color: var(--awd-blue); margin-bottom: 4px; }
+  .dropzone .sub { color: var(--awd-muted); font-size: 13px; }
+  #file-input { display: none; }
+  .preview { display: none; margin: 16px 0; padding: 12px; background: var(--awd-sand); border-radius: 10px; text-align: left; }
+  .preview img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
+  .success-state { display: none; text-align: center; padding: 24px 0; }
+  .success-state .check { width: 60px; height: 60px; background: var(--awd-green); color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 16px; }
+  .success-state h3 { color: var(--awd-blue); margin: 0 0 8px 0; }
+  .btn-full { width: 100%; padding: 14px; font-size: 15px; }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.active { display: flex; }
+  .modal { background: white; border-radius: 12px; max-width: 520px; width: 90%; padding: 24px; }
+  .modal h3 { margin: 0 0 8px 0; color: var(--awd-blue); }
+  .modal p { color: var(--awd-muted); font-size: 14px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .esc-card { background: white; border: 1px solid var(--awd-border); border-left: 4px solid var(--awd-red); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .esc-card .who { font-weight: 600; color: var(--awd-blue); font-size: 15px; }
+  .esc-card .meta { color: var(--awd-muted); font-size: 13px; margin-top: 2px; }
+  .esc-card .right { text-align: right; }
+  .section-title { color: var(--awd-blue); font-size: 18px; margin: 8px 0 14px 0; }
+  .footer { text-align: center; padding: 24px; color: var(--awd-muted); font-size: 12px; }
+  .demo-banner { background: #fef9c3; color: #854d0e; padding: 6px 14px; text-align: center; font-size: 12px; font-weight: 500; border-bottom: 1px solid #fde68a; }
+  @media (max-width: 768px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .header { flex-direction: column; }
+    table { font-size: 12px; }
+    th, td { padding: 10px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+   DEMO — Voorbeeld voor AWD. Alle namen en data zijn fictief. Er wordt niets opgeslagen of verstuurd.
+</div>
+
+<div class="topbar">
+  <div class="logo">AWD <span>•</span> Green Card Portal</div>
+  <div class="nav-switch">
+    <button id="nav-manager" class="active" onclick="showPage('manager')">Manager</button>
+    <button id="nav-employee" onclick="showPage('employee')">Medewerker upload</button>
+    <button id="nav-admin" onclick="showPage('admin')">AWD-admin</button>
+    <button id="nav-directie" onclick="showPage('directie')">Directie</button>
+  </div>
+</div>
+
+<!-- ============ MANAGER ============ -->
+<div id="page-manager" class="page active">
+  <div class="header">
+    <div>
+      <h1>Personeel — Green Card overzicht</h1>
+      <p>Beheer de gezondheidsverklaringen van je team. Reminders gaan automatisch 6 / 4 / 2 / 1 week voor verloop.</p>
+    </div>
+    <div class="role-badge">
+      <div class="dot"></div>
+      <div>
+        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als manager</div>
+        <strong>Café the Plaza</strong>
+      </div>
+    </div>
+  </div>
+  <div class="kpis" id="manager-kpis"></div>
+  <div class="toolbar">
+    <input type="text" id="manager-search" placeholder="Zoek medewerker..." oninput="renderManager()" />
+    <select id="manager-filter" onchange="renderManager()">
+      <option value="all">Alle statussen</option>
+      <option value="ok">In orde</option>
+      <option value="warn">Verloopt binnenkort</option>
+      <option value="alert">Verlopen</option>
+      <option value="escalated">Geëscaleerd</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary">Export Excel</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Medewerker toevoegen</button>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Medewerker</th><th>Functie</th><th>Verloopdatum</th><th>Status</th><th>Reminders</th><th>Laatste bewijs</th><th>Actie</th>
+        </tr>
+      </thead>
+      <tbody id="manager-table"></tbody>
+    </table>
+  </div>
+  <p style="margin-top:16px;color:var(--awd-muted);font-size:13px;">
+     Na <strong>4 reminders zonder actie</strong> wordt de AWD-directie automatisch geïnformeerd.
+  </p>
+</div>
+
+<!-- ============ EMPLOYEE ============ -->
+<div id="page-employee" class="page">
+  <div class="upload-wrapper">
+    <div class="upload-card" id="upload-state">
+      <div class="welcome">Hoi 👋</div>
+      <h2>Maria Tromp</h2>
+      <div class="desc">Upload een foto van je nieuwe Green Card zodat we hem op je dossier kunnen zetten.</div>
+      <div style="text-align:left;background:var(--awd-sand);padding:16px;border-radius:10px;margin-bottom:16px;">
+        <div class="info-row"><span class="label">Werkgever</span><span class="value">Café the Plaza</span></div>
+        <div class="info-row"><span class="label">Functie</span><span class="value">Server</span></div>
+        <div class="info-row"><span class="label">Huidige verloopdatum</span><span class="value expired">28 mei 2026 — Verlopen</span></div>
+      </div>
+      <label class="consent">
+        <input type="checkbox" id="consent-check" onchange="updateSubmitState()" />
+        <span>Ik geef toestemming dat AWD deze foto van mijn Green Card opslaat voor mijn personeelsdossier, conform de AVG.</span>
+      </label>
+      <div class="dropzone" onclick="document.getElementById('file-input').click()">
+        <div class="icon">📷</div>
+        <div class="main">Tik hier om foto te maken / kiezen</div>
+        <div class="sub">JPG of PNG, max 10 MB</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)" />
+      <div class="preview" id="preview">
+        <strong id="filename">groene-kaart.jpg</strong>
+        <div style="color:var(--awd-muted);font-size:13px;margin-top:4px;" id="filesize">2.4 MB</div>
+        <img id="preview-img" src="" alt="Preview" />
+      </div>
+      <button class="btn btn-primary btn-full" id="submit-btn" disabled onclick="submitUpload()">Indienen</button>
+      <p style="font-size:12px;color:var(--awd-muted);margin-top:14px;">
+        🔒 Je foto wordt veilig opgeslagen en alleen gebruikt voor je dossier.
+      </p>
+    </div>
+    <div class="upload-card success-state" id="success-state">
+      <div class="check">✓</div>
+      <h3>Bedankt, Maria!</h3>
+      <p style="color:var(--awd-muted);">
+        Je nieuwe Green Card is ingediend. Je manager controleert het en je nieuwe verloopdatum staat zo in het systeem.
+      </p>
+      <div style="background:var(--awd-sand);padding:12px;border-radius:10px;margin:16px 0;text-align:left;">
+        <div class="info-row"><span class="label">Ingediend op</span><span class="value" id="submit-date">—</span></div>
+        <div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--awd-amber);">In controle</span></div>
+      </div>
+      <button class="btn btn-secondary btn-full" onclick="resetUpload()">Opnieuw indienen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AWD ADMIN ============ -->
+<div id="page-admin" class="page">
+  <div class="header">
+    <div>
+      <h1>AWD totaaloverzicht</h1>
+      <p>Alle restaurants en medewerkers in één overzicht.</p>
+    </div>
+    <div class="role-badge">
+      <div class="dot"></div>
+      <div>
+        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als</div>
+        <strong>AWD-medewerker</strong>
+      </div>
+    </div>
+  </div>
+  <div class="kpis" id="admin-kpis"></div>
+  <div class="toolbar">
+    <input type="text" id="admin-search" placeholder="Zoek medewerker..." oninput="renderAdmin()" />
+    <select id="admin-restaurant" onchange="renderAdmin()"></select>
+    <select id="admin-filter" onchange="renderAdmin()">
+      <option value="all">Alle statussen</option>
+      <option value="ok">In orde</option>
+      <option value="warn">Verloopt binnenkort</option>
+      <option value="alert">Verlopen</option>
+      <option value="escalated">Geëscaleerd</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary">Importeer (Excel)</button>
+    <button class="btn btn-primary">Export Excel</button>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Medewerker</th><th>Restaurant</th><th>Functie</th><th>Verloopdatum</th><th>Status</th><th>Reminders</th>
+        </tr>
+      </thead>
+      <tbody id="admin-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ DIRECTIE ============ -->
+<div id="page-directie" class="page">
+  <div class="header">
+    <div>
+      <h1>Directie — escalaties</h1>
+      <p>Medewerkers waar na 4 reminders nog geen actie is ondernomen. Deze gevallen vragen om aandacht.</p>
+    </div>
+    <div class="role-badge">
+      <div class="dot" style="background:var(--awd-red);"></div>
+      <div>
+        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als</div>
+        <strong>AWD-directie</strong>
+      </div>
+    </div>
+  </div>
+  <div class="kpis" id="directie-kpis"></div>
+  <h2 class="section-title">Openstaande escalaties</h2>
+  <div id="directie-list"></div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Medewerker toevoegen</h3>
+    <p>In de echte versie vul je hier naam, e-mail en functie in. De medewerker krijgt automatisch een uitnodiging via mail met een persoonlijke uploadlink.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuleren</button>
+      <button class="btn btn-primary" onclick="closeModal()">Uitnodiging sturen</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Aruba Wine and Dine — Green Card Portal · Demo met fictieve gegevens
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-switch button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+  }
+
+  // ---- Fictieve dataset over meerdere AWD-restaurants ----
+  const MANAGER_RESTAURANT = "Café the Plaza";
+  const employees = [
+    // Café the Plaza
+    { restaurant: "Café the Plaza", name: "Maria Tromp",       role: "Server",         expires: "2026-05-28", reminders: 4, escalated: true,  proof: "—" },
+    { restaurant: "Café the Plaza", name: "Stefan Yarzagaray", role: "Cook",           expires: "2026-05-20", reminders: 4, escalated: true,  proof: "—" },
+    { restaurant: "Café the Plaza", name: "Andrés Kelly",      role: "Bartender",      expires: "2026-06-18", reminders: 2, escalated: false, proof: "—" },
+    { restaurant: "Café the Plaza", name: "Sofia Croes",       role: "Hostess",        expires: "2026-07-02", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Café the Plaza", name: "Jean-Paul Wever",   role: "Sous-chef",      expires: "2026-07-15", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Café the Plaza", name: "Luana Helder",      role: "Server",         expires: "2026-08-22", reminders: 0, escalated: false, proof: "—" },
+    { restaurant: "Café the Plaza", name: "Carlos Maduro",     role: "Chef de partie", expires: "2026-09-01", reminders: 0, escalated: false, proof: "kaart_carlos.jpg" },
+    { restaurant: "Café the Plaza", name: "Diana Henriquez",   role: "Server",         expires: "2026-10-14", reminders: 0, escalated: false, proof: "kaart_diana.jpg" },
+    { restaurant: "Café the Plaza", name: "Ricardo Vrolijk",   role: "Barback",        expires: "2026-11-08", reminders: 0, escalated: false, proof: "kaart_ricardo.jpg" },
+    { restaurant: "Café the Plaza", name: "Isabella Rosario",  role: "Manager",        expires: "2027-01-19", reminders: 0, escalated: false, proof: "kaart_isabella.jpg" },
+    // Moomba Beach
+    { restaurant: "Moomba Beach", name: "Kevin Geerman",     role: "Bartender",   expires: "2026-06-12", reminders: 3, escalated: false, proof: "—" },
+    { restaurant: "Moomba Beach", name: "Shaniqua Dirksz",  role: "Server",      expires: "2026-05-15", reminders: 4, escalated: true,  proof: "—" },
+    { restaurant: "Moomba Beach", name: "Rendell Wernet",   role: "Cook",        expires: "2026-06-29", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Moomba Beach", name: "Gillian Arends",   role: "Host",        expires: "2026-08-03", reminders: 0, escalated: false, proof: "kaart_gillian.jpg" },
+    { restaurant: "Moomba Beach", name: "Tamara Frank",     role: "Server",      expires: "2026-09-20", reminders: 0, escalated: false, proof: "kaart_tamara.jpg" },
+    { restaurant: "Moomba Beach", name: "Orlando Lampe",    role: "Chef",        expires: "2026-12-11", reminders: 0, escalated: false, proof: "kaart_orlando.jpg" },
+    // Hadicurari
+    { restaurant: "Hadicurari", name: "Priscilla Boekhoudt", role: "Server",    expires: "2026-06-06", reminders: 3, escalated: false, proof: "—" },
+    { restaurant: "Hadicurari", name: "Damian Croes",        role: "Sous-chef", expires: "2026-07-09", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Hadicurari", name: "Naomi Wever",         role: "Bartender", expires: "2026-08-28", reminders: 0, escalated: false, proof: "kaart_naomi.jpg" },
+    { restaurant: "Hadicurari", name: "Brian Maduro",        role: "Barback",   expires: "2026-10-02", reminders: 0, escalated: false, proof: "kaart_brian.jpg" },
+    // Que Pasa
+    { restaurant: "Que Pasa", name: "Elena Figaroa",   role: "Hostess",   expires: "2026-05-30", reminders: 4, escalated: true,  proof: "—" },
+    { restaurant: "Que Pasa", name: "Marlon Tromp",    role: "Server",    expires: "2026-06-21", reminders: 2, escalated: false, proof: "—" },
+    { restaurant: "Que Pasa", name: "Yara Dijkhoff",   role: "Cook",      expires: "2026-07-25", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Que Pasa", name: "Steven Ras",      role: "Bartender", expires: "2026-09-12", reminders: 0, escalated: false, proof: "kaart_steven.jpg" },
+    // Salt & Pepper
+    { restaurant: "Salt & Pepper", name: "Anabella Kock",  role: "Server",     expires: "2026-06-15", reminders: 2, escalated: false, proof: "—" },
+    { restaurant: "Salt & Pepper", name: "Dennis Wouters", role: "Chef",       expires: "2026-08-09", reminders: 0, escalated: false, proof: "kaart_dennis.jpg" },
+    { restaurant: "Salt & Pepper", name: "Rachel Emmers",  role: "Hostess",    expires: "2026-11-23", reminders: 0, escalated: false, proof: "kaart_rachel.jpg" },
+    // Tango Argentine Grill
+    { restaurant: "Tango Argentine Grill", name: "Mateo Silva",    role: "Grill cook", expires: "2026-06-09", reminders: 3, escalated: false, proof: "—" },
+    { restaurant: "Tango Argentine Grill", name: "Valentina Ruiz", role: "Server",     expires: "2026-07-18", reminders: 1, escalated: false, proof: "—" },
+    { restaurant: "Tango Argentine Grill", name: "Hugo Martinez",  role: "Sommelier",  expires: "2026-10-30", reminders: 0, escalated: false, proof: "kaart_hugo.jpg" },
+  ];
+
+  const restaurants = [...new Set(employees.map(e => e.restaurant))].sort();
+
+  function daysUntil(dateStr) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const target = new Date(dateStr);
+    return Math.round((target - today) / (1000*60*60*24));
+  }
+  function statusFor(e) {
+    const days = daysUntil(e.expires);
+    if (e.escalated) return { cls: 'expired', text: 'Geëscaleerd', key: 'escalated' };
+    if (days < 0) return { cls: 'alert', text: 'Verlopen ' + Math.abs(days) + ' dgn', key: 'alert' };
+    if (days < 42) return { cls: 'warn', text: 'Verloopt over ' + days + ' dgn', key: 'warn' };
+    return { cls: 'ok', text: 'In orde', key: 'ok' };
+  }
+  function reminderDots(count, escalated) {
+    let html = '<div class="reminders">';
+    for (let i = 0; i < 4; i++) {
+      const cls = i < count ? (escalated && i === 3 ? 'escalated' : 'sent') : '';
+      html += `<span class="${cls}"></span>`;
+    }
+    return html + '</div>';
+  }
+  function fmtDate(d) {
+    return new Date(d).toLocaleDateString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function kpiBlock(list) {
+    const ok = list.filter(e => statusFor(e).key === 'ok').length;
+    const warn = list.filter(e => statusFor(e).key === 'warn').length;
+    const alert = list.filter(e => statusFor(e).key === 'alert').length;
+    const esc = list.filter(e => statusFor(e).key === 'escalated').length;
+    return `
+      <div class="kpi ok"><div class="label">In orde</div><div class="value">${ok}</div></div>
+      <div class="kpi warn"><div class="label">Verloopt &lt; 6 wkn</div><div class="value">${warn}</div></div>
+      <div class="kpi alert"><div class="label">Verlopen</div><div class="value">${alert}</div></div>
+      <div class="kpi"><div class="label">Geëscaleerd</div><div class="value">${esc}</div></div>`;
+  }
+
+  // ---- Manager view ----
+  function renderManager() {
+    const list = employees.filter(e => e.restaurant === MANAGER_RESTAURANT);
+    document.getElementById('manager-kpis').innerHTML = kpiBlock(list);
+    const q = document.getElementById('manager-search').value.toLowerCase();
+    const f = document.getElementById('manager-filter').value;
+    const rows = list.filter(e => e.name.toLowerCase().includes(q))
+                     .filter(e => f === 'all' || statusFor(e).key === f);
+    document.getElementById('manager-table').innerHTML = rows.map(e => {
+      const st = statusFor(e);
+      return `<tr>
+        <td><strong>${e.name}</strong></td>
+        <td>${e.role}</td>
+        <td>${fmtDate(e.expires)}</td>
+        <td><span class="pill ${st.cls}"><span class="dot"></span>${st.text}</span></td>
+        <td>${reminderDots(e.reminders, e.escalated)}</td>
+        <td style="color:${e.proof === '—' ? 'var(--awd-muted)' : 'var(--awd-blue)'};">${e.proof}</td>
+        <td><button class="action-btn primary">Reminder</button><button class="action-btn">Upload</button></td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--awd-muted);padding:24px;">Geen resultaten</td></tr>`;
+  }
+
+  // ---- Admin view ----
+  function renderAdmin() {
+    document.getElementById('admin-kpis').innerHTML = kpiBlock(employees);
+    const q = document.getElementById('admin-search').value.toLowerCase();
+    const r = document.getElementById('admin-restaurant').value;
+    const f = document.getElementById('admin-filter').value;
+    const rows = employees.filter(e => e.name.toLowerCase().includes(q))
+                          .filter(e => r === 'all' || e.restaurant === r)
+                          .filter(e => f === 'all' || statusFor(e).key === f);
+    document.getElementById('admin-table').innerHTML = rows.map(e => {
+      const st = statusFor(e);
+      return `<tr>
+        <td><strong>${e.name}</strong></td>
+        <td>${e.restaurant}</td>
+        <td>${e.role}</td>
+        <td>${fmtDate(e.expires)}</td>
+        <td><span class="pill ${st.cls}"><span class="dot"></span>${st.text}</span></td>
+        <td>${reminderDots(e.reminders, e.escalated)}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--awd-muted);padding:24px;">Geen resultaten</td></tr>`;
+  }
+
+  // ---- Directie view ----
+  function renderDirectie() {
+    const esc = employees.filter(e => e.escalated);
+    const affectedRestaurants = [...new Set(esc.map(e => e.restaurant))].length;
+    document.getElementById('directie-kpis').innerHTML = `
+      <div class="kpi alert"><div class="label">Openstaande escalaties</div><div class="value">${esc.length}</div></div>
+      <div class="kpi warn"><div class="label">Betrokken restaurants</div><div class="value">${affectedRestaurants}</div></div>
+      <div class="kpi"><div class="label">Totaal medewerkers</div><div class="value">${employees.length}</div></div>
+      <div class="kpi ok"><div class="label">Restaurants totaal</div><div class="value">${restaurants.length}</div></div>`;
+    document.getElementById('directie-list').innerHTML = esc.map(e => {
+      const days = daysUntil(e.expires);
+      const expiredTxt = days < 0 ? `verlopen sinds ${Math.abs(days)} dagen` : `verloopt over ${days} dagen`;
+      return `<div class="esc-card">
+        <div>
+          <div class="who">${e.name} — ${e.restaurant}</div>
+          <div class="meta">${e.role} · Green Card ${expiredTxt} · 4 reminders verstuurd zonder actie</div>
+        </div>
+        <div class="right">
+          <button class="action-btn primary">Manager aanspreken</button>
+          <button class="action-btn">Details</button>
+        </div>
+      </div>`;
+    }).join('') || `<p style="color:var(--awd-muted);">Geen openstaande escalaties. 🎉</p>`;
+  }
+
+  // ---- Employee upload ----
+  function updateSubmitState() {
+    const consent = document.getElementById('consent-check').checked;
+    const hasFile = document.getElementById('preview').style.display === 'block';
+    document.getElementById('submit-btn').disabled = !(consent && hasFile);
+  }
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('filename').textContent = file.name;
+    document.getElementById('filesize').textContent = (file.size / (1024*1024)).toFixed(1) + ' MB';
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('preview').style.display = 'block';
+      updateSubmitState();
+    };
+    reader.readAsDataURL(file);
+  }
+  function submitUpload() {
+    const now = new Date().toLocaleString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('submit-date').textContent = now;
+    document.getElementById('upload-state').style.display = 'none';
+    document.getElementById('success-state').style.display = 'block';
+  }
+  function resetUpload() {
+    document.getElementById('upload-state').style.display = 'block';
+    document.getElementById('success-state').style.display = 'none';
+    document.getElementById('preview').style.display = 'none';
+    document.getElementById('consent-check').checked = false;
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('file-input').value = '';
+  }
+
+  function openModal() { document.getElementById('modal').classList.add('active'); }
+  function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+  // ---- Init ----
+  const sel = document.getElementById('admin-restaurant');
+  sel.innerHTML = '<option value="all">Alle restaurants</option>' + restaurants.map(r => `<option value="${r}">${r}</option>`).join('');
+  renderManager();
+  renderAdmin();
+  renderDirectie();
+</script>
+</body>
+</html>
