@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -163,16 +163,16 @@
 <body>
 
 <div class="demo-banner">
-   DEMO — Voorbeeld voor AWD. Alle namen en data zijn fictief. Er wordt niets opgeslagen of verstuurd.
+   DEMO — Example for AWD. All names and data are fictional. Nothing is stored or sent.
 </div>
 
 <div class="topbar">
   <div class="logo">AWD <span>•</span> Green Card Portal</div>
   <div class="nav-switch">
     <button id="nav-manager" class="active" onclick="showPage('manager')">Manager</button>
-    <button id="nav-employee" onclick="showPage('employee')">Medewerker upload</button>
-    <button id="nav-admin" onclick="showPage('admin')">AWD-admin</button>
-    <button id="nav-directie" onclick="showPage('directie')">Directie</button>
+    <button id="nav-employee" onclick="showPage('employee')">Employee upload</button>
+    <button id="nav-admin" onclick="showPage('admin')">AWD admin</button>
+    <button id="nav-directie" onclick="showPage('directie')">Management</button>
   </div>
 </div>
 
@@ -180,43 +180,43 @@
 <div id="page-manager" class="page active">
   <div class="header">
     <div>
-      <h1>Personeel — Green Card overzicht</h1>
-      <p>Beheer de gezondheidsverklaringen van je team. Reminders gaan automatisch 6 / 4 / 2 / 1 week voor verloop.</p>
+      <h1>Staff — Green Card overview</h1>
+      <p>Manage your team's health certificates. Reminders are sent automatically 6 / 4 / 2 / 1 weeks before expiry.</p>
     </div>
     <div class="role-badge">
       <div class="dot"></div>
       <div>
-        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als manager</div>
+        <div style="font-size:12px;color:var(--awd-muted);">Logged in as manager</div>
         <strong>Café the Plaza</strong>
       </div>
     </div>
   </div>
   <div class="kpis" id="manager-kpis"></div>
   <div class="toolbar">
-    <input type="text" id="manager-search" placeholder="Zoek medewerker..." oninput="renderManager()" />
+    <input type="text" id="manager-search" placeholder="Search employee..." oninput="renderManager()" />
     <select id="manager-filter" onchange="renderManager()">
-      <option value="all">Alle statussen</option>
-      <option value="ok">In orde</option>
-      <option value="warn">Verloopt binnenkort</option>
-      <option value="alert">Verlopen</option>
-      <option value="escalated">Geëscaleerd</option>
+      <option value="all">All statuses</option>
+      <option value="ok">Valid</option>
+      <option value="warn">Expiring soon</option>
+      <option value="alert">Expired</option>
+      <option value="escalated">Escalated</option>
     </select>
     <div class="spacer"></div>
     <button class="btn btn-secondary">Export Excel</button>
-    <button class="btn btn-primary" onclick="openModal()">+ Medewerker toevoegen</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Add employee</button>
   </div>
   <div class="table-wrapper">
     <table>
       <thead>
         <tr>
-          <th>Medewerker</th><th>Functie</th><th>Verloopdatum</th><th>Status</th><th>Reminders</th><th>Laatste bewijs</th><th>Actie</th>
+          <th>Employee</th><th>Role</th><th>Expiry date</th><th>Status</th><th>Reminders</th><th>Latest proof</th><th>Action</th>
         </tr>
       </thead>
       <tbody id="manager-table"></tbody>
     </table>
   </div>
   <p style="margin-top:16px;color:var(--awd-muted);font-size:13px;">
-     Na <strong>4 reminders zonder actie</strong> wordt de AWD-directie automatisch geïnformeerd.
+     After <strong>4 reminders without action</strong>, AWD management is informed automatically.
   </p>
 </div>
 
@@ -224,45 +224,45 @@
 <div id="page-employee" class="page">
   <div class="upload-wrapper">
     <div class="upload-card" id="upload-state">
-      <div class="welcome">Hoi 👋</div>
+      <div class="welcome">Hi 👋</div>
       <h2>Maria Tromp</h2>
-      <div class="desc">Upload een foto van je nieuwe Green Card zodat we hem op je dossier kunnen zetten.</div>
+      <div class="desc">Upload a photo of your new Green Card so we can add it to your file.</div>
       <div style="text-align:left;background:var(--awd-sand);padding:16px;border-radius:10px;margin-bottom:16px;">
-        <div class="info-row"><span class="label">Werkgever</span><span class="value">Café the Plaza</span></div>
-        <div class="info-row"><span class="label">Functie</span><span class="value">Server</span></div>
-        <div class="info-row"><span class="label">Huidige verloopdatum</span><span class="value expired">28 mei 2026 — Verlopen</span></div>
+        <div class="info-row"><span class="label">Employer</span><span class="value">Café the Plaza</span></div>
+        <div class="info-row"><span class="label">Role</span><span class="value">Server</span></div>
+        <div class="info-row"><span class="label">Current expiry date</span><span class="value expired">28 May 2026 — Expired</span></div>
       </div>
       <label class="consent">
         <input type="checkbox" id="consent-check" onchange="updateSubmitState()" />
-        <span>Ik geef toestemming dat AWD deze foto van mijn Green Card opslaat voor mijn personeelsdossier, conform de AVG.</span>
+        <span>I consent to AWD storing this photo of my Green Card for my personnel file, in accordance with GDPR.</span>
       </label>
       <div class="dropzone" onclick="document.getElementById('file-input').click()">
         <div class="icon">📷</div>
-        <div class="main">Tik hier om foto te maken / kiezen</div>
-        <div class="sub">JPG of PNG, max 10 MB</div>
+        <div class="main">Tap here to take / choose a photo</div>
+        <div class="sub">JPG or PNG, max 10 MB</div>
       </div>
       <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)" />
       <div class="preview" id="preview">
-        <strong id="filename">groene-kaart.jpg</strong>
+        <strong id="filename">green-card.jpg</strong>
         <div style="color:var(--awd-muted);font-size:13px;margin-top:4px;" id="filesize">2.4 MB</div>
         <img id="preview-img" src="" alt="Preview" />
       </div>
-      <button class="btn btn-primary btn-full" id="submit-btn" disabled onclick="submitUpload()">Indienen</button>
+      <button class="btn btn-primary btn-full" id="submit-btn" disabled onclick="submitUpload()">Submit</button>
       <p style="font-size:12px;color:var(--awd-muted);margin-top:14px;">
-        🔒 Je foto wordt veilig opgeslagen en alleen gebruikt voor je dossier.
+        🔒 Your photo is stored securely and only used for your file.
       </p>
     </div>
     <div class="upload-card success-state" id="success-state">
       <div class="check">✓</div>
-      <h3>Bedankt, Maria!</h3>
+      <h3>Thank you, Maria!</h3>
       <p style="color:var(--awd-muted);">
-        Je nieuwe Green Card is ingediend. Je manager controleert het en je nieuwe verloopdatum staat zo in het systeem.
+        Your new Green Card has been submitted. Your manager will review it and your new expiry date will be in the system shortly.
       </p>
       <div style="background:var(--awd-sand);padding:12px;border-radius:10px;margin:16px 0;text-align:left;">
-        <div class="info-row"><span class="label">Ingediend op</span><span class="value" id="submit-date">—</span></div>
-        <div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--awd-amber);">In controle</span></div>
+        <div class="info-row"><span class="label">Submitted on</span><span class="value" id="submit-date">—</span></div>
+        <div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--awd-amber);">Under review</span></div>
       </div>
-      <button class="btn btn-secondary btn-full" onclick="resetUpload()">Opnieuw indienen</button>
+      <button class="btn btn-secondary btn-full" onclick="resetUpload()">Submit again</button>
     </div>
   </div>
 </div>
@@ -271,37 +271,37 @@
 <div id="page-admin" class="page">
   <div class="header">
     <div>
-      <h1>AWD totaaloverzicht</h1>
-      <p>Alle restaurants en medewerkers in één overzicht.</p>
+      <h1>AWD overview</h1>
+      <p>All restaurants and employees in one view.</p>
     </div>
     <div class="role-badge">
       <div class="dot"></div>
       <div>
-        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als</div>
-        <strong>AWD-medewerker</strong>
+        <div style="font-size:12px;color:var(--awd-muted);">Logged in as</div>
+        <strong>AWD staff</strong>
       </div>
     </div>
   </div>
   <div class="kpis" id="admin-kpis"></div>
   <div class="toolbar">
-    <input type="text" id="admin-search" placeholder="Zoek medewerker..." oninput="renderAdmin()" />
+    <input type="text" id="admin-search" placeholder="Search employee..." oninput="renderAdmin()" />
     <select id="admin-restaurant" onchange="renderAdmin()"></select>
     <select id="admin-filter" onchange="renderAdmin()">
-      <option value="all">Alle statussen</option>
-      <option value="ok">In orde</option>
-      <option value="warn">Verloopt binnenkort</option>
-      <option value="alert">Verlopen</option>
-      <option value="escalated">Geëscaleerd</option>
+      <option value="all">All statuses</option>
+      <option value="ok">Valid</option>
+      <option value="warn">Expiring soon</option>
+      <option value="alert">Expired</option>
+      <option value="escalated">Escalated</option>
     </select>
     <div class="spacer"></div>
-    <button class="btn btn-secondary">Importeer (Excel)</button>
+    <button class="btn btn-secondary">Import (Excel)</button>
     <button class="btn btn-primary">Export Excel</button>
   </div>
   <div class="table-wrapper">
     <table>
       <thead>
         <tr>
-          <th>Medewerker</th><th>Restaurant</th><th>Functie</th><th>Verloopdatum</th><th>Status</th><th>Reminders</th>
+          <th>Employee</th><th>Restaurant</th><th>Role</th><th>Expiry date</th><th>Status</th><th>Reminders</th>
         </tr>
       </thead>
       <tbody id="admin-table"></tbody>
@@ -309,39 +309,39 @@
   </div>
 </div>
 
-<!-- ============ DIRECTIE ============ -->
+<!-- ============ MANAGEMENT ============ -->
 <div id="page-directie" class="page">
   <div class="header">
     <div>
-      <h1>Directie — escalaties</h1>
-      <p>Medewerkers waar na 4 reminders nog geen actie is ondernomen. Deze gevallen vragen om aandacht.</p>
+      <h1>Management — escalations</h1>
+      <p>Employees where no action has been taken after 4 reminders. These cases need attention.</p>
     </div>
     <div class="role-badge">
       <div class="dot" style="background:var(--awd-red);"></div>
       <div>
-        <div style="font-size:12px;color:var(--awd-muted);">Ingelogd als</div>
-        <strong>AWD-directie</strong>
+        <div style="font-size:12px;color:var(--awd-muted);">Logged in as</div>
+        <strong>AWD management</strong>
       </div>
     </div>
   </div>
   <div class="kpis" id="directie-kpis"></div>
-  <h2 class="section-title">Openstaande escalaties</h2>
+  <h2 class="section-title">Open escalations</h2>
   <div id="directie-list"></div>
 </div>
 
 <div class="modal-bg" id="modal">
   <div class="modal">
-    <h3>Medewerker toevoegen</h3>
-    <p>In de echte versie vul je hier naam, e-mail en functie in. De medewerker krijgt automatisch een uitnodiging via mail met een persoonlijke uploadlink.</p>
+    <h3>Add employee</h3>
+    <p>In the real version you enter name, email and role here. The employee automatically receives an invitation by email with a personal upload link.</p>
     <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal()">Annuleren</button>
-      <button class="btn btn-primary" onclick="closeModal()">Uitnodiging sturen</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal()">Send invitation</button>
     </div>
   </div>
 </div>
 
 <div class="footer">
-  Aruba Wine and Dine — Green Card Portal · Demo met fictieve gegevens
+  Aruba Wine and Dine — Green Card Portal · Demo with fictional data
 </div>
 
 <script>
@@ -352,7 +352,7 @@
     document.getElementById('nav-' + name).classList.add('active');
   }
 
-  // ---- Fictieve dataset over meerdere AWD-restaurants ----
+  // ---- Fictional dataset across multiple AWD restaurants ----
   const MANAGER_RESTAURANT = "Café the Plaza";
   const employees = [
     // Café the Plaza
@@ -362,35 +362,35 @@
     { restaurant: "Café the Plaza", name: "Sofia Croes",       role: "Hostess",        expires: "2026-07-02", reminders: 1, escalated: false, proof: "—" },
     { restaurant: "Café the Plaza", name: "Jean-Paul Wever",   role: "Sous-chef",      expires: "2026-07-15", reminders: 1, escalated: false, proof: "—" },
     { restaurant: "Café the Plaza", name: "Luana Helder",      role: "Server",         expires: "2026-08-22", reminders: 0, escalated: false, proof: "—" },
-    { restaurant: "Café the Plaza", name: "Carlos Maduro",     role: "Chef de partie", expires: "2026-09-01", reminders: 0, escalated: false, proof: "kaart_carlos.jpg" },
-    { restaurant: "Café the Plaza", name: "Diana Henriquez",   role: "Server",         expires: "2026-10-14", reminders: 0, escalated: false, proof: "kaart_diana.jpg" },
-    { restaurant: "Café the Plaza", name: "Ricardo Vrolijk",   role: "Barback",        expires: "2026-11-08", reminders: 0, escalated: false, proof: "kaart_ricardo.jpg" },
-    { restaurant: "Café the Plaza", name: "Isabella Rosario",  role: "Manager",        expires: "2027-01-19", reminders: 0, escalated: false, proof: "kaart_isabella.jpg" },
+    { restaurant: "Café the Plaza", name: "Carlos Maduro",     role: "Chef de partie", expires: "2026-09-01", reminders: 0, escalated: false, proof: "card_carlos.jpg" },
+    { restaurant: "Café the Plaza", name: "Diana Henriquez",   role: "Server",         expires: "2026-10-14", reminders: 0, escalated: false, proof: "card_diana.jpg" },
+    { restaurant: "Café the Plaza", name: "Ricardo Vrolijk",   role: "Barback",        expires: "2026-11-08", reminders: 0, escalated: false, proof: "card_ricardo.jpg" },
+    { restaurant: "Café the Plaza", name: "Isabella Rosario",  role: "Manager",        expires: "2027-01-19", reminders: 0, escalated: false, proof: "card_isabella.jpg" },
     // Moomba Beach
     { restaurant: "Moomba Beach", name: "Kevin Geerman",     role: "Bartender",   expires: "2026-06-12", reminders: 3, escalated: false, proof: "—" },
     { restaurant: "Moomba Beach", name: "Shaniqua Dirksz",  role: "Server",      expires: "2026-05-15", reminders: 4, escalated: true,  proof: "—" },
     { restaurant: "Moomba Beach", name: "Rendell Wernet",   role: "Cook",        expires: "2026-06-29", reminders: 1, escalated: false, proof: "—" },
-    { restaurant: "Moomba Beach", name: "Gillian Arends",   role: "Host",        expires: "2026-08-03", reminders: 0, escalated: false, proof: "kaart_gillian.jpg" },
-    { restaurant: "Moomba Beach", name: "Tamara Frank",     role: "Server",      expires: "2026-09-20", reminders: 0, escalated: false, proof: "kaart_tamara.jpg" },
-    { restaurant: "Moomba Beach", name: "Orlando Lampe",    role: "Chef",        expires: "2026-12-11", reminders: 0, escalated: false, proof: "kaart_orlando.jpg" },
+    { restaurant: "Moomba Beach", name: "Gillian Arends",   role: "Host",        expires: "2026-08-03", reminders: 0, escalated: false, proof: "card_gillian.jpg" },
+    { restaurant: "Moomba Beach", name: "Tamara Frank",     role: "Server",      expires: "2026-09-20", reminders: 0, escalated: false, proof: "card_tamara.jpg" },
+    { restaurant: "Moomba Beach", name: "Orlando Lampe",    role: "Chef",        expires: "2026-12-11", reminders: 0, escalated: false, proof: "card_orlando.jpg" },
     // Hadicurari
     { restaurant: "Hadicurari", name: "Priscilla Boekhoudt", role: "Server",    expires: "2026-06-06", reminders: 3, escalated: false, proof: "—" },
     { restaurant: "Hadicurari", name: "Damian Croes",        role: "Sous-chef", expires: "2026-07-09", reminders: 1, escalated: false, proof: "—" },
-    { restaurant: "Hadicurari", name: "Naomi Wever",         role: "Bartender", expires: "2026-08-28", reminders: 0, escalated: false, proof: "kaart_naomi.jpg" },
-    { restaurant: "Hadicurari", name: "Brian Maduro",        role: "Barback",   expires: "2026-10-02", reminders: 0, escalated: false, proof: "kaart_brian.jpg" },
+    { restaurant: "Hadicurari", name: "Naomi Wever",         role: "Bartender", expires: "2026-08-28", reminders: 0, escalated: false, proof: "card_naomi.jpg" },
+    { restaurant: "Hadicurari", name: "Brian Maduro",        role: "Barback",   expires: "2026-10-02", reminders: 0, escalated: false, proof: "card_brian.jpg" },
     // Que Pasa
     { restaurant: "Que Pasa", name: "Elena Figaroa",   role: "Hostess",   expires: "2026-05-30", reminders: 4, escalated: true,  proof: "—" },
     { restaurant: "Que Pasa", name: "Marlon Tromp",    role: "Server",    expires: "2026-06-21", reminders: 2, escalated: false, proof: "—" },
     { restaurant: "Que Pasa", name: "Yara Dijkhoff",   role: "Cook",      expires: "2026-07-25", reminders: 1, escalated: false, proof: "—" },
-    { restaurant: "Que Pasa", name: "Steven Ras",      role: "Bartender", expires: "2026-09-12", reminders: 0, escalated: false, proof: "kaart_steven.jpg" },
+    { restaurant: "Que Pasa", name: "Steven Ras",      role: "Bartender", expires: "2026-09-12", reminders: 0, escalated: false, proof: "card_steven.jpg" },
     // Salt & Pepper
     { restaurant: "Salt & Pepper", name: "Anabella Kock",  role: "Server",     expires: "2026-06-15", reminders: 2, escalated: false, proof: "—" },
-    { restaurant: "Salt & Pepper", name: "Dennis Wouters", role: "Chef",       expires: "2026-08-09", reminders: 0, escalated: false, proof: "kaart_dennis.jpg" },
-    { restaurant: "Salt & Pepper", name: "Rachel Emmers",  role: "Hostess",    expires: "2026-11-23", reminders: 0, escalated: false, proof: "kaart_rachel.jpg" },
+    { restaurant: "Salt & Pepper", name: "Dennis Wouters", role: "Chef",       expires: "2026-08-09", reminders: 0, escalated: false, proof: "card_dennis.jpg" },
+    { restaurant: "Salt & Pepper", name: "Rachel Emmers",  role: "Hostess",    expires: "2026-11-23", reminders: 0, escalated: false, proof: "card_rachel.jpg" },
     // Tango Argentine Grill
     { restaurant: "Tango Argentine Grill", name: "Mateo Silva",    role: "Grill cook", expires: "2026-06-09", reminders: 3, escalated: false, proof: "—" },
     { restaurant: "Tango Argentine Grill", name: "Valentina Ruiz", role: "Server",     expires: "2026-07-18", reminders: 1, escalated: false, proof: "—" },
-    { restaurant: "Tango Argentine Grill", name: "Hugo Martinez",  role: "Sommelier",  expires: "2026-10-30", reminders: 0, escalated: false, proof: "kaart_hugo.jpg" },
+    { restaurant: "Tango Argentine Grill", name: "Hugo Martinez",  role: "Sommelier",  expires: "2026-10-30", reminders: 0, escalated: false, proof: "card_hugo.jpg" },
   ];
 
   const restaurants = [...new Set(employees.map(e => e.restaurant))].sort();
@@ -403,10 +403,10 @@
   }
   function statusFor(e) {
     const days = daysUntil(e.expires);
-    if (e.escalated) return { cls: 'expired', text: 'Geëscaleerd', key: 'escalated' };
-    if (days < 0) return { cls: 'alert', text: 'Verlopen ' + Math.abs(days) + ' dgn', key: 'alert' };
-    if (days < 42) return { cls: 'warn', text: 'Verloopt over ' + days + ' dgn', key: 'warn' };
-    return { cls: 'ok', text: 'In orde', key: 'ok' };
+    if (e.escalated) return { cls: 'expired', text: 'Escalated', key: 'escalated' };
+    if (days < 0) return { cls: 'alert', text: 'Expired ' + Math.abs(days) + ' d', key: 'alert' };
+    if (days < 42) return { cls: 'warn', text: 'Expires in ' + days + ' d', key: 'warn' };
+    return { cls: 'ok', text: 'Valid', key: 'ok' };
   }
   function reminderDots(count, escalated) {
     let html = '<div class="reminders">';
@@ -417,7 +417,7 @@
     return html + '</div>';
   }
   function fmtDate(d) {
-    return new Date(d).toLocaleDateString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric' });
+    return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   }
   function kpiBlock(list) {
     const ok = list.filter(e => statusFor(e).key === 'ok').length;
@@ -425,10 +425,10 @@
     const alert = list.filter(e => statusFor(e).key === 'alert').length;
     const esc = list.filter(e => statusFor(e).key === 'escalated').length;
     return `
-      <div class="kpi ok"><div class="label">In orde</div><div class="value">${ok}</div></div>
-      <div class="kpi warn"><div class="label">Verloopt &lt; 6 wkn</div><div class="value">${warn}</div></div>
-      <div class="kpi alert"><div class="label">Verlopen</div><div class="value">${alert}</div></div>
-      <div class="kpi"><div class="label">Geëscaleerd</div><div class="value">${esc}</div></div>`;
+      <div class="kpi ok"><div class="label">Valid</div><div class="value">${ok}</div></div>
+      <div class="kpi warn"><div class="label">Expires &lt; 6 wks</div><div class="value">${warn}</div></div>
+      <div class="kpi alert"><div class="label">Expired</div><div class="value">${alert}</div></div>
+      <div class="kpi"><div class="label">Escalated</div><div class="value">${esc}</div></div>`;
   }
 
   // ---- Manager view ----
@@ -450,7 +450,7 @@
         <td style="color:${e.proof === '—' ? 'var(--awd-muted)' : 'var(--awd-blue)'};">${e.proof}</td>
         <td><button class="action-btn primary">Reminder</button><button class="action-btn">Upload</button></td>
       </tr>`;
-    }).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--awd-muted);padding:24px;">Geen resultaten</td></tr>`;
+    }).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--awd-muted);padding:24px;">No results</td></tr>`;
   }
 
   // ---- Admin view ----
@@ -472,32 +472,32 @@
         <td><span class="pill ${st.cls}"><span class="dot"></span>${st.text}</span></td>
         <td>${reminderDots(e.reminders, e.escalated)}</td>
       </tr>`;
-    }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--awd-muted);padding:24px;">Geen resultaten</td></tr>`;
+    }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--awd-muted);padding:24px;">No results</td></tr>`;
   }
 
-  // ---- Directie view ----
+  // ---- Management view ----
   function renderDirectie() {
     const esc = employees.filter(e => e.escalated);
     const affectedRestaurants = [...new Set(esc.map(e => e.restaurant))].length;
     document.getElementById('directie-kpis').innerHTML = `
-      <div class="kpi alert"><div class="label">Openstaande escalaties</div><div class="value">${esc.length}</div></div>
-      <div class="kpi warn"><div class="label">Betrokken restaurants</div><div class="value">${affectedRestaurants}</div></div>
-      <div class="kpi"><div class="label">Totaal medewerkers</div><div class="value">${employees.length}</div></div>
-      <div class="kpi ok"><div class="label">Restaurants totaal</div><div class="value">${restaurants.length}</div></div>`;
+      <div class="kpi alert"><div class="label">Open escalations</div><div class="value">${esc.length}</div></div>
+      <div class="kpi warn"><div class="label">Restaurants affected</div><div class="value">${affectedRestaurants}</div></div>
+      <div class="kpi"><div class="label">Total employees</div><div class="value">${employees.length}</div></div>
+      <div class="kpi ok"><div class="label">Total restaurants</div><div class="value">${restaurants.length}</div></div>`;
     document.getElementById('directie-list').innerHTML = esc.map(e => {
       const days = daysUntil(e.expires);
-      const expiredTxt = days < 0 ? `verlopen sinds ${Math.abs(days)} dagen` : `verloopt over ${days} dagen`;
+      const expiredTxt = days < 0 ? `expired ${Math.abs(days)} days ago` : `expires in ${days} days`;
       return `<div class="esc-card">
         <div>
           <div class="who">${e.name} — ${e.restaurant}</div>
-          <div class="meta">${e.role} · Green Card ${expiredTxt} · 4 reminders verstuurd zonder actie</div>
+          <div class="meta">${e.role} · Green Card ${expiredTxt} · 4 reminders sent without action</div>
         </div>
         <div class="right">
-          <button class="action-btn primary">Manager aanspreken</button>
+          <button class="action-btn primary">Contact manager</button>
           <button class="action-btn">Details</button>
         </div>
       </div>`;
-    }).join('') || `<p style="color:var(--awd-muted);">Geen openstaande escalaties. 🎉</p>`;
+    }).join('') || `<p style="color:var(--awd-muted);">No open escalations. 🎉</p>`;
   }
 
   // ---- Employee upload ----
@@ -520,7 +520,7 @@
     reader.readAsDataURL(file);
   }
   function submitUpload() {
-    const now = new Date().toLocaleString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const now = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     document.getElementById('submit-date').textContent = now;
     document.getElementById('upload-state').style.display = 'none';
     document.getElementById('success-state').style.display = 'block';
@@ -539,7 +539,7 @@
 
   // ---- Init ----
   const sel = document.getElementById('admin-restaurant');
-  sel.innerHTML = '<option value="all">Alle restaurants</option>' + restaurants.map(r => `<option value="${r}">${r}</option>`).join('');
+  sel.innerHTML = '<option value="all">All restaurants</option>' + restaurants.map(r => `<option value="${r}">${r}</option>`).join('');
   renderManager();
   renderAdmin();
   renderDirectie();
